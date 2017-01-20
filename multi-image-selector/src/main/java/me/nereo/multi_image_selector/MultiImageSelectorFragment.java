@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -21,6 +22,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
+import android.support.v4.content.FileProvider;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.ListPopupWindow;
@@ -57,7 +59,7 @@ public class MultiImageSelectorFragment extends Fragment {
 
     public static final String TAG = "MultiImageSelectorFragment";
 
-    private static final int REQUEST_STORAGE_WRITE_ACCESS_PERMISSION = 110;
+    private static final int REQUEST_CAMERA_PERMISSION = 110;
     private static final int REQUEST_CAMERA = 100;
 
     private static final String KEY_TEMP_FILE = "key_temp_file";
@@ -303,11 +305,12 @@ public class MultiImageSelectorFragment extends Fragment {
      * Open camera
      */
     private void showCameraAction() {
-        if(ContextCompat.checkSelfPermission(getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN // Permission was added in API Level 16
+                &&ContextCompat.checkSelfPermission(getContext(), Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED){
-            requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    getString(R.string.mis_permission_rationale_write_storage),
-                    REQUEST_STORAGE_WRITE_ACCESS_PERMISSION);
+            requestPermission(Manifest.permission.CAMERA,
+                    getString(R.string.mis_permission_rationale_camera),
+                    REQUEST_CAMERA_PERMISSION);
         }else {
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
             if (intent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -317,7 +320,8 @@ public class MultiImageSelectorFragment extends Fragment {
                     e.printStackTrace();
                 }
                 if (mTmpFile != null && mTmpFile.exists()) {
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(mTmpFile));
+                    Uri imageUri = FileProvider.getUriForFile(getContext(), "me.nereo.multiimageselector.fileprovider", mTmpFile);//通过FileProvider创建一个content类型的Uri
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                     startActivityForResult(intent, REQUEST_CAMERA);
                 } else {
                     Toast.makeText(getActivity(), R.string.mis_error_image_not_exist, Toast.LENGTH_SHORT).show();
@@ -348,7 +352,7 @@ public class MultiImageSelectorFragment extends Fragment {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if(requestCode == REQUEST_STORAGE_WRITE_ACCESS_PERMISSION){
+        if(requestCode == REQUEST_CAMERA_PERMISSION){
             if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 showCameraAction();
             }

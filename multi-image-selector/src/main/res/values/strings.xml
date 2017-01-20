@@ -13,5 +13,6 @@
     <string name="mis_permission_dialog_ok">OK</string>
     <string name="mis_permission_dialog_cancel">CANCEL</string>
     <string name="mis_permission_rationale">Storage read permission is needed to pick files.</string>
+    <string name="mis_permission_rationale_camera">Camera permission is needed to take photo.</string>
     <string name="mis_permission_rationale_write_storage">Storage write permission is needed to save the image.</string>
 </resources>
