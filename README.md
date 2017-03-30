@@ -23,7 +23,8 @@ repositories {
 }
 
 dependencies {
-    compile 'com.github.lovetuzitong:MultiImageSelector:1.2'
+    //compile 'com.github.lovetuzitong:MultiImageSelector:1.2'
+    compile 'com.hx.multi-image-selector:multi-image-selector:1.2.1'
 }
 ```
 
