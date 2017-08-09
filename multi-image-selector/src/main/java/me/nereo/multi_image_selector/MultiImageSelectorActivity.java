@@ -13,6 +13,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
+import com.jaeger.library.StatusBarUtil;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -40,6 +42,10 @@ public class MultiImageSelectorActivity extends AppCompatActivity
     public static final String EXTRA_RESULT = "select_result";
     /** Original data set */
     public static final String EXTRA_DEFAULT_SELECTED_LIST = "default_list";
+    /** Set Status Bar color*/
+    public static final String EXTRA_STATUS_BAR_COLOR = "status_bar_color";
+    /** Set actionbar background color */
+    public static final String EXTRA_ACTION_BAR_BACKGROUND_COLOR = "actionbar_background_color";
     // Default image size
     private static final int DEFAULT_IMAGE_SIZE = 9;
 
@@ -73,6 +79,13 @@ public class MultiImageSelectorActivity extends AppCompatActivity
         final boolean isShow = intent.getBooleanExtra(EXTRA_SHOW_CAMERA, true);
         if(mode == MODE_MULTI && intent.hasExtra(EXTRA_DEFAULT_SELECTED_LIST)) {
             resultList = intent.getStringArrayListExtra(EXTRA_DEFAULT_SELECTED_LIST);
+        }
+        if (intent.hasExtra(EXTRA_STATUS_BAR_COLOR)) {
+            StatusBarUtil.setColor(this, intent.getIntExtra(EXTRA_STATUS_BAR_COLOR, 0));
+        }
+
+        if (intent.hasExtra(EXTRA_ACTION_BAR_BACKGROUND_COLOR)) {
+            toolbar.setBackgroundColor(intent.getIntExtra(EXTRA_ACTION_BAR_BACKGROUND_COLOR, 0));
         }
 
         mSubmitButton = (Button) findViewById(R.id.commit);
